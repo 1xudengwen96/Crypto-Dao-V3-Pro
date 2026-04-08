@@ -94,7 +94,33 @@
 **阅读时间**: 30 分钟
 **优先级**: 极高（了解资金安全）
 
-### 7. [PROJECT_TREE.md](../PROJECT_TREE.md)
+### 7. [docs/TREASURY_RBS_ARCHITECTURE.md](TREASURY_RBS_ARCHITECTURE.md) 🏦
+**国库与 RBS 架构详解**
+- Treasury（国库）完整功能解析
+- RBS（储备支持系统）完整功能解析
+- 两者核心区别与协作流程
+- 资金流向图
+- 安全机制分析
+- 源文件位置
+
+**阅读时间**: 25 分钟
+**优先级**: 极高（理解核心货币政策引擎）
+
+### 8. [docs/USDT_FLOW_ANALYSIS.md](USDT_FLOW_ANALYSIS.md) 💵
+**USDT 流动性与完整资金流向分析**
+- LP 流动性池完整数据（USDT + PRO 储备量）
+- USDT 总分布概览（LP 池 / RBS / 国库）
+- USDT 入场后的具体分配流程（4 个阶段）
+- USDT 详细分配百分比（3 种场景）
+- USDT 完整流向图（含可视化）
+- 关键 USDT 流转路径分析（4 条路径）
+- USDT 每日流动估算
+- 风险评估
+
+**阅读时间**: 30 分钟
+**优先级**: 极高（了解 USDT 安全与分配）
+
+### 9. [PROJECT_TREE.md](../PROJECT_TREE.md)
 **原始项目结构**
 - 初始树状图
 - 合约关系
@@ -147,7 +173,9 @@ Crypto-Dao-V3-Pro/
 │   ├── SECURITY_ANALYSIS.md         风险评估
 │   ├── VERIFICATION_GUIDE.md        验证教程
 │   ├── RBS_ANALYSIS.md              RBS 合约分析
-│   └── FUND_FLOW_ANALYSIS.md        资金流向分析
+│   ├── FUND_FLOW_ANALYSIS.md        资金流向分析
+│   ├── TREASURY_RBS_ARCHITECTURE.md 国库与RBS架构
+│   └── USDT_FLOW_ANALYSIS.md        USDT流动性分析 💵
 │
 ├── 📁 contracts/                    组织化的智能合约
 │   ├── PRO_Token/                   ✅ 已验证

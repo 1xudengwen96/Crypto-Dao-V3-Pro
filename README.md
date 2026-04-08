@@ -314,6 +314,12 @@ Crypto-Dao-V3-Pro/
 │   │   ├── SafeERC20.sol                             # SafeERC20 库
 │   │   └── ...（其他依赖）
 │   │
+│   ├── RBS_Implementation/                           # RBS 逻辑实现
+│   │   ├── RBS.sol                                   # RBSControl 实现 ✅
+│   │   ├── IERC20.sol                                # ERC20 接口
+│   │   ├── SafeERC20.sol                             # SafeERC20 库
+│   │   └── ...（其他依赖）
+│   │
 │   ├── Staking_Proxy/                                # 质押代理
 │   │   ├── TransparentUpgradeableProxy.sol           # 代理合约
 │   │   ├── ProxyAdmin.sol                            # 代理管理员
@@ -325,7 +331,11 @@ Crypto-Dao-V3-Pro/
 │   ├── INDEX.md                                      # 文档索引导航
 │   ├── ADDRESSES.md                                  # 完整地址注册表
 │   ├── SECURITY_ANALYSIS.md                          # 安全分析与风险评估
-│   └── VERIFICATION_GUIDE.md                         # BscScan 验证指南
+│   ├── VERIFICATION_GUIDE.md                         # BscScan 验证指南
+│   ├── RBS_ANALYSIS.md                               # RBS 合约分析
+│   ├── FUND_FLOW_ANALYSIS.md                         # 资金流向分析
+│   ├── TREASURY_RBS_ARCHITECTURE.md                  # 国库与RBS架构详解 🏦
+│   └── USDT_FLOW_ANALYSIS.md                         # USDT流动性分析 💵
 │
 └── （原始目录，保留供参考）
     ├── PRO0x8D65744527f55d0b2338350912d5C99A81ddF0e2/
@@ -333,6 +343,81 @@ Crypto-Dao-V3-Pro/
     ├── Implementation0xD2B955d22c542EAF932A3cCB1960de3D75a3473B/
     ├── staking_proxy0xC0021e0849faDefB98761f40829009905Dbd8Ee8/
     └── safe_wallet0x912008f7f56650bFcBa8102cdCD8ABD889769997/
+```
+
+---
+
+## 🏦 Treasury 与 RBS 架构
+
+> 深入了解货币政策引擎：**Treasury（国库）** 和 **RBS（储备支持系统）** 的区别与协作
+> 
+> 📖 完整文档: [docs/TREASURY_RBS_ARCHITECTURE.md](docs/TREASURY_RBS_ARCHITECTURE.md)
+
+### 快速概览
+
+| 维度 | Treasury（国库） | RBS（储备支持系统） |
+|------|-----------------|---------------------|
+| **是什么** | 协议控制的资产金库 | 储备支持和市场操作系统 |
+| **做什么** | 接收资产、铸造 PRO、追踪储备、分发奖励 | 执行交换、管理流动性、定时铸造 |
+| **核心理念** | OHM 式 PCV 国库模型 | 受控的市场做市 |
+| **一句话** | "铸币厂 + 金库" | "交易员 + 调度器" |
+
+### 协作流程
+
+```
+RBS Control (~520 万 USD)
+    │
+    │  mint() → 检查限制 → 授权 USD
+    │
+    ▼
+Crypto Treasury (~180 万 USD)
+    │
+    │  depositStableReserve() → 铸造 PRO
+    │
+    ▼
+PRO Token → 铸造到 RBS → 用于 PancakeSwap 做市
+```
+
+**关键区别**：
+- **Treasury** = 银行金库：只管保管资产和执行铸造规则，不决定什么时候操作
+- **RBS** = 交易员/做市商：决定何时、以何种速率铸造新代币，管理流动性池和市场价格
+
+---
+
+## 💧 LP 流动性与 USDT 分布
+
+> 深入了解 PRO/USDT 流动性池和 USDT 资金流向
+> 
+> 📖 完整文档: [docs/USDT_FLOW_ANALYSIS.md](docs/USDT_FLOW_ANALYSIS.md)
+
+### LP 流动性池（PancakeSwap V2）
+
+| 字段 | 值 |
+|------|-----|
+| **LP 对地址** | `0x63844BD4BFad910B1643713302a1cC1ed20d50c3` |
+| **交易对** | USDT / PRO |
+| **USDT 储备** | 16,287,529 (~$1629 万) |
+| **PRO 储备** | 268,892 (~$1629 万) |
+| **总流动性** | ~$3257 万 |
+| **当前价格** | ~$60.57 USDT/PRO |
+| **24h 交易量** | ~$157 万 |
+
+### USDT 分布百分比
+
+```
+LP 池 (PancakeSwap):  ████████████████████████████████████████ 69.9%  → 交易流动性
+RBS 合约:             █████████████ 22.3%                      → 铸造储备 + 做市
+Treasury 国库:        ████ 7.7%                                → 铸造支撑储备
+```
+
+### USDT 流向速览
+
+```
+外部 USDT 注入
+    │
+    ├──► 69.9% → PancakeSwap LP 池 → 用户自由交易
+    ├──► 22.3% → RBS 合约 → 铸造 PRO + 添加流动性
+    └──►  7.7% → Treasury 国库 → 储备支撑
 ```
 
 ---
