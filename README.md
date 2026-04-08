@@ -1,464 +1,452 @@
-# CryptoDAO V3 Pro - BSC Ecosystem
+# CryptoDAO V3 Pro - BSC 生态生态系统
 
-> ⚠️ **DISCLAIMER**: This project has been associated with community reports linking it to previous projects (AKAS → OLY → LynkCoDAO → CryptoDAO V3 PRO). All information here is sourced from on-chain data and public blockchain explorers. **Always DYOR (Do Your Own Research)** before interacting with any smart contracts.
-
----
-
-## 📊 Project Overview
-
-CryptoDAO V3 Pro is a DeFi ecosystem deployed on **BNB Smart Chain (BSC)** consisting of:
-- **PRO Token**: BEP-20 token with tax mechanism and liquidity pool balancing
-- **Treasury System**: Reserve-backed minting and asset management
-- **Staking System**: Token staking for rewards (implementation unverified)
-- **Multi-Signature Wallet**: Governance and access control via Gnosis Safe
+> ⚠️ **免责声明**：本项目被社区报告与之前的项目（AKAS → OLY → LynkCoDAO → CryptoDAO V3 PRO）有关联。此处所有信息均来自链上数据和公开区块链浏览器。**请务必自行研究（DYOR）**，在与任何智能合约交互之前谨慎评估风险。
 
 ---
 
-## 🏗️ Architecture
+## 📊 项目概述
+
+CryptoDAO V3 Pro 是部署在 **币安智能链（BSC）** 上的 DeFi 生态系统，包含：
+- **PRO 代币**：BEP-20 代币，具有税收机制和流动性池平衡功能
+- **国库系统**：基于储备金的铸造和资产管理
+- **质押系统**：代币质押获取奖励（实现合约未验证）
+- **多签钱包**：通过 Gnosis Safe 进行治理和访问控制
+
+---
+
+## 🏗️ 架构设计
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Multi-Signature Wallet                        │
+│                        多签钱包                                   │
 │           0x912008f7f56650bFcBa8102cdCD8ABD889769997            │
-│                    (Gnosis Safe - Safe Proxy)                    │
+│                    (Gnosis Safe - Safe 代理)                     │
 └────────────────────────┬────────────────────────────────────────┘
-                         │ Controls ownership/admin rights
+                         │ 控制所有权/管理权限
                          ▼
     ┌────────────────────┼────────────────────┐
     │                    │                    │
     ▼                    ▼                    ▼
 ┌──────────┐    ┌──────────────┐    ┌──────────────┐
-│PRO Token │    │  Treasury    │    │  Staking     │
-│          │    │   Proxy      │    │   Proxy      │
+│PRO 代币   │    │   国库代理    │    │   质押代理    │
 │0x8D65... │    │  0xf907...   │    │  0xC002...   │
 └──────────┘    └──────┬───────┘    └──────┬───────┘
                        │                   │
-              Delegates to:         Delegates to:
+              委托调用:             委托调用:
               ┌──────────────┐    ┌──────────────┐
-              │CryptoTreasury│    │  Unknown     │
+              │CryptoTreasury│    │  未知实现       │
               │0xD2B9...473B │    │0x6d69...2f54 │
-              │(✅ Verified) │    │(❌ Unverified)│
+              │(✅ 已验证)    │    │(❌ 未验证)    │
               └──────────────┘    └──────────────┘
 ```
 
 ---
 
-## 📋 Core Contracts
+## 📋 核心合约
 
-### 1. PRO Token (BEP-20)
+### 1. PRO 代币 (BEP-20)
 
-| Field | Value |
+| 字段 | 值 |
 |-------|-------|
-| **Contract Address** | `0x8D65744527f55d0b2338350912d5C99A81ddF0e2` |
-| **Token Name** | Pro Token |
-| **Symbol** | PRO |
-| **Decimals** | 9 |
-| **Total Supply** | 1,240,979.305198 PRO |
-| **Holders** | 140,900 |
-| **Compiler** | Solidity v0.8.30 |
-| **Optimization** | Enabled (200 runs) |
-| **EVM Version** | Cancun |
-| **Verification** | ✅ Verified (Exact Match) |
-| **BscScan** | [View Contract](https://bscscan.com/token/0x8D65744527f55d0b2338350912d5C99A81ddF0e2) |
+| **合约地址** | `0x8D65744527f55d0b2338350912d5C99A81ddF0e2` |
+| **代币名称** | Pro Token |
+| **符号** | PRO |
+| **小数位** | 9 |
+| **总供应量** | 1,240,979.305198 PRO |
+| **持有者数量** | 140,900 |
+| **编译器** | Solidity v0.8.30 |
+| **优化** | 已启用（200 次运行） |
+| **EVM 版本** | Cancun |
+| **验证状态** | ✅ 已验证（精确匹配） |
+| **BscScan** | [查看合约](https://bscscan.com/token/0x8D65744527f55d0b2338350912d5C99A81ddF0e2) |
 
-#### Key Features:
-- ✅ **Sell Tax Mechanism**: Default 3% (max configurable up to 30%)
-- ✅ **Whitelist System**: Addresses exempt from taxes and transfer restrictions
-- ✅ **Liquidity Pool Balancing**: `balancePool()` burns configurable % of pool tokens (max 5%, 6-hour cooldown)
-- ✅ **Minting**: Only callable by `treasury` address
-- ✅ **Governance Controls**: Separate `owner` and `governance` roles
-- ✅ **Transfer Restrictions**: Can disable transfers from pool to non-whitelisted addresses
+#### 核心功能：
+- ✅ **卖出税收机制**：默认 3%（最高可配置至 30%）
+- ✅ **白名单系统**：免除税收和转账限制的地址
+- ✅ **流动性池平衡**：`balancePool()` 燃烧可配置比例的池代币（最高 5%，6 小时冷却）
+- ✅ **铸造功能**：仅 `treasury` 地址可调用
+- ✅ **治理控制**：分离的 `owner` 和 `governance` 角色
+- ✅ **转账限制**：可禁用从池到非白名单地址的转账
 
-#### Key Roles:
-| Role | Description |
+#### 关键角色：
+| 角色 | 描述 |
 |------|-------------|
-| `owner` | Controls whitelist, target pool, transfer state, governance transfer |
-| `governance` | Controls fee receiver, sell tax rates, pool balancing |
-| `treasury` | Authorized to mint new tokens |
-| `feeReceiver` | Receives sell tax fees |
-| `targetPool` | PancakeSwap LP pair address |
+| `owner` | 控制白名单、目标池、转账状态、治理权转移 |
+| `governance` | 控制费接收者、卖出税率、池平衡 |
+| `treasury` | 授权铸造新代币 |
+| `feeReceiver` | 接收卖出税收费用 |
+| `targetPool` | PancakeSwap LP 交易对地址 |
 
-#### Source Files:
-See `PRO0x8D65744527f55d0b2338350912d5C99A81ddF0e2/` directory
+#### 源文件：
+见 `contracts/PRO_Token/` 目录
 
 ---
 
-### 2. Treasury System
+### 2. 国库系统
 
-#### Treasury Proxy
+#### 国库代理
 
-| Field | Value |
+| 字段 | 值 |
 |-------|-------|
-| **Proxy Address** | `0xf9074b5C035c961443373f78A6344e5Adc61d314` |
-| **Proxy Type** | TransparentUpgradeableProxy (ERC1967) |
-| **Implementation** | `0xD2B955d22c542EAF932A3cCB1960de3D75a3473B` |
-| **Proxy Admin** | `0x98b3534f128a131FB5D1C48749f8c93fd65553c4` |
-| **BscScan** | [View Proxy](https://bscscan.com/address/0xf9074b5C035c961443373f78A6344e5Adc61d314) |
+| **代理地址** | `0xf9074b5C035c961443373f78A6344e5Adc61d314` |
+| **代理类型** | TransparentUpgradeableProxy (ERC1967) |
+| **实现地址** | `0xD2B955d22c542EAF932A3cCB1960de3D75a3473B` |
+| **代理管理员** | `0x98b3534f128a131FB5D1C48749f8c93fd65553c4` |
+| **BscScan** | [查看代理](https://bscscan.com/address/0xf9074b5C035c961443373f78A6344e5Adc61d314) |
 
-#### Treasury Implementation (CryptoTreasury)
+#### 国库实现（CryptoTreasury）
 
-| Field | Value |
+| 字段 | 值 |
 |-------|-------|
-| **Implementation Address** | `0xD2B955d22c542EAF932A3cCB1960de3D75a3473B` |
-| **Contract Name** | CryptoTreasury |
-| **Compiler** | Solidity v0.8.30 |
-| **Optimization** | Enabled (200 runs) |
-| **EVM Version** | Cancun |
-| **License** | MIT |
-| **Verification** | ✅ Verified (Exact Match) |
-| **Architecture** | Upgradeable (OwnableUpgradeable, Initializable) |
-| **BscScan** | [View Contract](https://bscscan.com/address/0xD2B955d22c542EAF932A3cCB1960de3D75a3473B) |
+| **实现地址** | `0xD2B955d22c542EAF932A3cCB1960de3D75a3473B` |
+| **合约名称** | CryptoTreasury |
+| **编译器** | Solidity v0.8.30 |
+| **优化** | 已启用（200 次运行） |
+| **EVM 版本** | Cancun |
+| **许可证** | MIT |
+| **验证状态** | ✅ 已验证（精确匹配） |
+| **架构** | 可升级（OwnableUpgradeable, Initializable） |
+| **BscScan** | [查看合约](https://bscscan.com/address/0xD2B955d22c542EAF932A3cCB1960de3D75a3473B) |
 
-#### Key Features:
-- ✅ **Reserve Management**: Manages stablecoins and liquidity tokens
-- ✅ **Deposit Minting**: Depositing assets mints PRO tokens (minus profit fee)
-- ✅ **Reward Distribution**: Minting rewards via authorized managers
-- ✅ **Reserve Auditing**: Recalculate total reserves on-chain
-- ✅ **Role-Based Access Control**: 8 different managing roles
-- ✅ **Queue System**: Delayed activation of role changes for security
+#### 核心功能：
+- ✅ **储备金管理**：管理稳定币和流动性代币
+- ✅ **存款铸造**：存入资产铸造 PRO 代币（减去利润费）
+- ✅ **奖励分发**：通过授权管理者铸造奖励
+- ✅ **储备金审计**：链上重新计算总储备金
+- ✅ **基于角色的访问控制**：8 种不同的管理角色
+- ✅ **队列系统**：角色变更延迟激活以提高安全性
 
-#### Managing Roles (MANAGING enum):
-| Role | Description |
+#### 管理角色（MANAGING 枚举）：
+| 角色 | 描述 |
 |------|-------------|
-| `RESERVEDEPOSITOR` | Can deposit stable reserves |
-| `RESERVESPENDER` | Can spend from reserves |
-| `RESERVETOKEN` | Recognized reserve assets |
-| `RESERVEMANAGER` | Can manage/withdraw reserves |
-| `LIQUIDITYDEPOSITOR` | Can deposit liquidity tokens (LP) |
-| `LIQUIDITYTOKEN` | Recognized liquidity tokens |
-| `LIQUIDITYMANAGER` | Can manage liquidity tokens |
-| `REWARDMANAGER` | Can mint rewards to recipients |
+| `RESERVEDEPOSITOR` | 可存入稳定储备金 |
+| `RESERVESPENDER` | 可支出储备金 |
+| `RESERVETOKEN` | 已认可的储备资产 |
+| `RESERVEMANAGER` | 可管理/提取储备金 |
+| `LIQUIDITYDEPOSITOR` | 可存入流动性代币（LP） |
+| `LIQUIDITYTOKEN` | 已认可的流动性代币 |
+| `LIQUIDITYMANAGER` | 可管理流动性代币 |
+| `REWARDMANAGER` | 可向接收者铸造奖励 |
 
-#### Key Configuration:
-| Parameter | Description |
+#### 关键配置：
+| 参数 | 描述 |
 |-----------|-------------|
-| `proToken` | PRO token address |
-| `usd` | Stablecoin reserve address |
-| `rbs` | RBS contract address |
-| `bondCalculator` | LP token valuation calculator |
-| `blocksNeededForQueue` | Block delay for role changes |
-| `totalReserves` | Total tracked reserve value |
-| `dead` | Burn address: `0x000000000000000000000000000000000000dEaD` |
+| `proToken` | PRO 代币地址 |
+| `usd` | 稳定币储备地址 |
+| `rbs` | RBS 合约地址 |
+| `bondCalculator` | LP 代币估值计算器 |
+| `blocksNeededForQueue` | 角色变更的区块延迟 |
+| `totalReserves` | 总追踪储备价值 |
+| `dead` | 燃烧地址：`0x000000000000000000000000000000000000dEaD` |
 
-#### Source Files:
-See `Implementation0xD2B955d22c542EAF932A3cCB1960de3D75a3473B/` directory
+#### 源文件：
+见 `contracts/Treasury_Implementation/` 目录
 
-#### Transactions:
-- RBS Owner change: [TX](https://bscscan.com/tx/0x73c38428fdf75ed3fe3a8bcf5c51aeb04144bd6a1e0f2af2c36191ae7f274b5c#eventlog)
-- Proxy Admin TX 1: [TX](https://bscscan.com/tx/0x0e414eeed70d947fea719af0fd6def68a2ba038103ca886b65103c8f607c886e)
-- Proxy Admin TX 2: [TX](https://bscscan.com/tx/0xea04f2023b1dcc1264fd07ab983947c4784ccb3fb86b16de8c1162f6a037f2b1)
-
----
-
-### 3. Staking System
-
-#### Staking Proxy
-
-| Field | Value |
-|-------|-------|
-| **Proxy Address** | `0xC0021e0849faDefB98761f40829009905Dbd8Ee8` |
-| **Proxy Type** | TransparentUpgradeableProxy (ERC1967) |
-| **Implementation** | `0x6d694ce971343626429f87ef05e0cd292e3f2f54` |
-| **Proxy Admin Initial Owner** | `0x8533e14caea7c622a1dc69b9eb5f0e47b79ce6a7` |
-| **BscScan** | [View Proxy](https://bscscan.com/address/0xC0021e0849faDefB98761f40829009905Dbd8Ee8) |
-
-#### Staking Implementation
-
-| Field | Value |
-|-------|-------|
-| **Implementation Address** | `0x6d694ce971343626429f87ef05e0cd292e3f2f54` |
-| **Verification** | ❌ **UNVERIFIED** |
-| **Balance** | 0 BNB |
-| **Creator** | `0x8533e14caea7c622a1dc69b9eb5f0e47b79ce6a7` |
-| **Transactions** | 0 recorded |
-| **BscScan** | [View Contract](https://bscscan.com/address/0x6d694ce971343626429f87ef05e0cd292e3f2f54) |
-
-#### ⚠️ Limitations:
-- ❌ **Source code NOT verified on BscScan** - Human-readable Solidity code is not publicly available
-- ❌ **Functions cannot be read** - Without verified source code or published ABI, specific function signatures cannot be confirmed
-- ⚠️ **Transaction history shows "Rebase" method** - Suggests rebase/tokenomics mechanics, but exact logic unknown
-- ⚠️ **Proxy support exists but no upgrades recorded** - Implementation can be changed by admin
-
-#### Known Information:
-- Uses ERC1967 Transparent Upgradeable Proxy pattern
-- Proxy admin controlled by `0x8533e14caea7c622a1dc69b9eb5f0e47b79ce6a7`
-- Transaction history indicates a `Rebase` method exists
-- Presumed to handle PRO token staking and reward distribution (unverified)
-
-#### Source Files:
-See `staking_proxy0xC0021e0849faDefB98761f40829009905Dbd8Ee8/` directory (Proxy infrastructure only)
-
-#### Transactions:
-- Staking Proxy Owner: `0xD78D4a09E00a54ac9787ECbBeCA02791336C75b3`
-- TX 1: [TX](https://bscscan.com/tx/0x795be955eab2da66e1e23c03d17e0e95639f29b28bda154330394c37ea8007fa#eventlog)
-- TX 2: [TX](https://bscscan.com/tx/0x246bf6bb3d18a761542563cce8dc152eaa9352a02335b26c5a6b853472fc7777#eventlog)
+#### 关键交易：
+- RBS 所有者变更：[交易](https://bscscan.com/tx/0x73c38428fdf75ed3fe3a8bcf5c51aeb04144bd6a1e0f2af2c36191ae7f274b5c#eventlog)
+- 代理管理员交易 1：[交易](https://bscscan.com/tx/0x0e414eeed70d947fea719af0fd6def68a2ba038103ca886b65103c8f607c886e)
+- 代理管理员交易 2：[交易](https://bscscan.com/tx/0xea04f2023b1dcc1264fd07ab983947c4784ccb3fb86b16de8c1162f6a037f2b1)
 
 ---
 
-### 4. Multi-Signature Wallet (Gnosis Safe)
+### 3. 质押系统
 
-| Field | Value |
+#### 质押代理
+
+| 字段 | 值 |
 |-------|-------|
-| **Contract Address** | `0x912008f7f56650bFcBa8102cdCD8ABD889769997` |
-| **Type** | Gnosis Safe Multisig (Safe Proxy) |
-| **Balance** | 0 BNB |
-| **Total Transactions** | 10 |
-| **Activity Period** | March 11, 2026 – March 24, 2026 |
-| **Deployer** | `0x3AB5B452...3673b26d1` |
-| **BscScan** | [View Wallet](https://bscscan.com/address/0x912008f7f56650bFcBa8102cdCD8ABD889769997) |
+| **代理地址** | `0xC0021e0849faDefB98761f40829009905Dbd8Ee8` |
+| **代理类型** | TransparentUpgradeableProxy (ERC1967) |
+| **实现地址** | `0x6d694ce971343626429f87ef05e0cd292e3f2f54` |
+| **代理管理员初始所有者** | `0x8533e14caea7c622a1dc69b9eb5f0e47b79ce6a7` |
+| **BscScan** | [查看代理](https://bscscan.com/address/0xC0021e0849faDefB98761f40829009905Dbd8Ee8) |
 
-#### Known Activity:
-- Received 2 transfers of 0.01 BNB (~$6.11 each) on March 11
-- Internal transactions show outbound transfers to `0xA4190d3e...409Be1cA7`
-- Primarily uses `Exec Transaction` method (multisig execution)
-- Current balance: 0 BNB
+#### 质押实现
 
-#### ⚠️ Limitations:
-- ❌ **Owners not publicly listed** - Requires querying Safe contract's `getOwners()` function
-- ❌ **Confirmation threshold unknown** - Requires querying `getThreshold()` function
-- ⚠️ Controls ownership of PRO token, Treasury, and Staking systems
+| 字段 | 值 |
+|-------|-------|
+| **实现地址** | `0x6d694ce971343626429f87ef05e0cd292e3f2f54` |
+| **验证状态** | ❌ **未验证** |
+| **余额** | 0 BNB |
+| **创建者** | `0x8533e14caea7c622a1dc69b9eb5f0e47b79ce6a7` |
+| **交易数** | 0 笔记录 |
+| **BscScan** | [查看合约](https://bscscan.com/address/0x6d694ce971343626429f87ef05e0cd292e3f2f54) |
+
+#### ⚠️ 限制说明：
+- ❌ **源代码未在 BscScan 验证** - 人类可读的 Solidity 代码未公开发布
+- ❌ **函数无法读取** - 未验证源代码或发布 ABI，无法确认具体函数签名
+- ⚠️ **交易历史显示 "Rebase" 方法** - 暗示存在 rebase/代币经济学机制，但具体逻辑未知
+- ⚠️ **存在代理支持但无升级记录** - 实现可由管理员更改
+
+#### 已知信息：
+- 使用 ERC1967 透明可升级代理模式
+- 代理管理员由 `0x8533e14caea7c622a1dc69b9eb5f0e47b79ce6a7` 控制
+- 交易历史表明存在 `Rebase` 方法
+- 推测处理 PRO 代币质押和奖励分发（未验证）
+
+#### 源文件：
+见 `contracts/Staking_Proxy/` 目录（仅代理基础设施）
+
+#### 交易记录：
+- 质押代理所有者：`0xD78D4a09E00a54ac9787ECbBeCA02791336C75b3`
+- 交易 1：[交易](https://bscscan.com/tx/0x795be955eab2da66e1e23c03d17e0e95639f29b28bda154330394c37ea8007fa#eventlog)
+- 交易 2：[交易](https://bscscan.com/tx/0x246bf6bb3d18a761542563cce8dc152eaa9352a02335b26c5a6b853472fc7777#eventlog)
 
 ---
 
-## 📁 Project Structure
+### 4. 多签钱包（Gnosis Safe）
+
+| 字段 | 值 |
+|-------|-------|
+| **合约地址** | `0x912008f7f56650bFcBa8102cdCD8ABD889769997` |
+| **类型** | Gnosis Safe Multisig（Safe 代理） |
+| **余额** | 0 BNB |
+| **总交易数** | 10 笔 |
+| **活跃期** | 2026 年 3 月 11 日 – 3 月 24 日 |
+| **部署者** | `0x3AB5B452...3673b26d1` |
+| **BscScan** | [查看钱包](https://bscscan.com/address/0x912008f7f56650bFcBa8102cdCD8ABD889769997) |
+
+#### 已知活动：
+- 3 月 11 日收到 2 笔 0.01 BNB（约 $6.11）转账
+- 内部交易显示向 `0xA4190d3e...409Be1cA7` 的出站转账
+- 主要使用 `Exec Transaction` 方法（多签执行）
+- 当前余额：0 BNB
+
+#### ⚠️ 限制说明：
+- ❌ **所有者未公开列出** - 需查询 Safe 合约的 `getOwners()` 函数
+- ❌ **确认阈值未知** - 需查询 `getThreshold()` 函数
+- ⚠️ 控制 PRO 代币、国库和质押系统的核心权限
+
+---
+
+## 📁 项目结构
 
 ```
 Crypto-Dao-V3-Pro/
 │
-├── README.md                                         # This file
-├── PROJECT_TREE.md                                   # Original project tree
-├── proxy_admin                                       # Treasury Proxy Admin info
-├── RBS_owner                                         # RBS contract owner info
-├── staking_proxy_owner                               # Staking Proxy Owner info
+├── README.md                                         # 英文文档
+├── README_CN.md                                      # 中文文档（本文档）
+├── PROJECT_TREE.md                                   # 原始项目树
+├── PROJECT_SUMMARY.md                                # 项目总结
+├── proxy_admin                                       # 国库代理管理员信息
+├── RBS_owner                                         # RBS 合约所有者信息
+├── staking_proxy_owner                               # 质押代理所有者信息
 │
-├── PRO0x8D65744527f55d0b2338350912d5C99A81ddF0e2/  # PRO Token Contract
-│   ├── ProToken.sol                                  # Main token contract ✅
-│   ├── ERC20.sol                                     # OpenZeppelin ERC20
-│   ├── IERC20.sol                                    # ERC20 interface
-│   ├── IERC20Metadata.sol                            # Metadata interface
-│   ├── Ownable.sol                                   # Ownership management
-│   ├── Context.sol                                   # Context utilities
-│   ├── draft-IERC6093.sol                            # Error standards
-│   └── Settings.txt                                  # Compilation settings
+├── contracts/                                        # 智能合约（有组织）
+│   ├── PRO_Token/                                    # PRO 代币合约 ✅
+│   │   ├── ProToken.sol                              # 主代币合约 ✅
+│   │   ├── ERC20.sol                                 # OpenZeppelin ERC20
+│   │   ├── IERC20.sol                                # ERC20 接口
+│   │   ├── IERC20Metadata.sol                        # 元数据接口
+│   │   ├── Ownable.sol                               # 所有权管理
+│   │   ├── Context.sol                               # 上下文工具
+│   │   ├── draft-IERC6093.sol                        # 错误标准
+│   │   └── Settings.txt                              # 编译配置
+│   │
+│   ├── Treasury_Proxy/                               # 国库代理
+│   │   ├── TransparentUpgradeableProxy.sol           # 代理合约
+│   │   ├── ProxyAdmin.sol                            # 代理管理员
+│   │   ├── ERC1967Proxy.sol                          # ERC1967 代理
+│   │   └── ...（其他代理基础设施）
+│   │
+│   ├── Treasury_Implementation/                      # 国库逻辑实现
+│   │   ├── Treasury.sol                              # CryptoTreasury 实现 ✅
+│   │   ├── IERC20.sol                                # ERC20 接口
+│   │   ├── SafeERC20.sol                             # SafeERC20 库
+│   │   └── ...（其他依赖）
+│   │
+│   ├── Staking_Proxy/                                # 质押代理
+│   │   ├── TransparentUpgradeableProxy.sol           # 代理合约
+│   │   ├── ProxyAdmin.sol                            # 代理管理员
+│   │   └── ...（其他代理基础设施）
+│   │
+│   └── Multisig_Wallet/                              # 多签钱包（空目录）
 │
-├── Treasury0xf9074b5C035c961443373f78A6344e5Adc61d314/  # Treasury Proxy
-│   ├── TransparentUpgradeableProxy.sol               # Proxy contract
-│   ├── ProxyAdmin.sol                                # Proxy admin
-│   ├── ERC1967Proxy.sol                              # ERC1967 proxy
-│   ├── ERC1967Utils.sol                              # ERC1967 utilities
-│   ├── Proxy.sol                                     # Base proxy
-│   ├── IERC1967.sol                                  # ERC1967 interface
-│   ├── StorageSlot.sol                               # Storage slot utilities
-│   ├── Address.sol                                   # Address utilities
-│   ├── LowLevelCall.sol                              # Low-level call utilities
-│   ├── Errors.sol                                    # Error definitions
-│   ├── IBeacon.sol                                   # Beacon interface
-│   ├── Context.sol                                   # Context
-│   ├── Ownable.sol                                   # Ownership
-│   └── Settings.txt                                  # Compilation settings
+├── docs/                                             # 详细文档
+│   ├── INDEX.md                                      # 文档索引导航
+│   ├── ADDRESSES.md                                  # 完整地址注册表
+│   ├── SECURITY_ANALYSIS.md                          # 安全分析与风险评估
+│   └── VERIFICATION_GUIDE.md                         # BscScan 验证指南
 │
-├── Implementation0xD2B955d22c542EAF932A3cCB1960de3D75a3473B/  # Treasury Logic
-│   ├── Treasury.sol                                  # CryptoTreasury implementation ✅
-│   ├── IERC20.sol                                    # ERC20 interface
-│   ├── SafeERC20.sol                                 # SafeERC20 library
-│   ├── OwnableUpgradeable.sol                        # Upgradeable ownership
-│   ├── Initializable.sol                             # Initialization
-│   ├── ContextUpgradeable.sol                        # Upgradeable context
-│   ├── IERC1363.sol                                  # ERC1363 interface
-│   ├── IERC165.sol                                   # ERC165 interface
-│   └── Settings                                      # Compilation settings
-│
-├── staking_proxy0xC0021e0849faDefB98761f40829009905Dbd8Ee8/  # Staking Proxy
-│   ├── TransparentUpgradeableProxy.sol               # Proxy contract
-│   ├── ProxyAdmin.sol                                # Proxy admin
-│   ├── ERC1967Proxy.sol                              # ERC1967 proxy
-│   ├── ERC1967Utils.sol                              # ERC1967 utilities
-│   ├── Proxy.sol                                     # Base proxy
-│   ├── IERC1967.sol                                  # ERC1967 interface
-│   ├── StorageSlot.sol                               # Storage slot utilities
-│   ├── Address.sol                                   # Address utilities
-│   ├── LowLevelCall.sol                              # Low-level call utilities
-│   ├── Errors.sol                                    # Error definitions
-│   ├── IBeacon.sol                                   # Beacon interface
-│   ├── Context.sol                                   # Context
-│   ├── Ownable.sol                                   # Ownership
-│   └── Settings                                      # Compilation settings
-│
-└── pro-ecosystem/                                    # ⚠️ Empty directory
-    └── (empty)
+└── （原始目录，保留供参考）
+    ├── PRO0x8D65744527f55d0b2338350912d5C99A81ddF0e2/
+    ├── Treasury0xf9074b5C035c961443373f78A6344e5Adc61d314/
+    ├── Implementation0xD2B955d22c542EAF932A3cCB1960de3D75a3473B/
+    ├── staking_proxy0xC0021e0849faDefB98761f40829009905Dbd8Ee8/
+    └── safe_wallet0x912008f7f56650bFcBa8102cdCD8ABD889769997/
 ```
 
 ---
 
-## 🔗 External Dependencies (Unverified)
+## 🔗 外部依赖（未验证）
 
-The following contracts/components could not be independently verified or located:
+以下合约/组件无法独立验证或定位：
 
-| Component | Status | Notes |
+| 组件 | 状态 | 说明 |
 |-----------|--------|-------|
-| **PancakeSwap LP Pool (targetPool)** | ❌ Cannot Verify | PRO token's `targetPool` address not publicly disclosed. Presumed to be a PancakeSwap V2 pair. |
-| **Bond Calculator** | ❌ Cannot Verify | Referenced in Treasury for LP token valuation. Address unknown. |
-| **RBS Contract** | ❌ Cannot Verify | Referenced in Treasury (`rbs` field). Address unknown. Owner TX exists but RBS address not disclosed. |
-| **USD Stablecoin** | ❌ Cannot Verify | Treasury's `usd` reserve token address unknown. |
-| **Current Governance Address** | ❌ Cannot Verify | PRO token's `governance` field value not publicly disclosed. |
-| **Current Treasury Address** | ❌ Cannot Verify | PRO token's `treasury` field value not publicly disclosed. |
-| **Whitelist Addresses** | ❌ Cannot Verify | List of whitelisted addresses not publicly disclosed. |
-| **Role Manager Addresses** | ❌ Cannot Verify | Treasury's authorized managers for each role not disclosed. |
-| **Staking Implementation Logic** | ❌ Unverified | Implementation exists but source code not verified on BscScan. |
+| **PancakeSwap 流动性池（targetPool）** | ❌ 无法验证 | PRO 代币的 `targetPool` 地址未公开披露。推测为 PancakeSwap V2 交易对。 |
+| **债券计算器（Bond Calculator）** | ❌ 无法验证 | 国库中引用的 LP 代币估值合约。地址未知。 |
+| **RBS 合约** | ❌ 无法验证 | 国库中引用的 `rbs` 字段。地址未知。仅存在所有者交易，但未披露 RBS 地址。 |
+| **USD 稳定币** | ❌ 无法验证 | 国库接受的储备资产地址未知。 |
+| **当前治理地址** | ❌ 无法验证 | PRO 代币的 `governance` 字段值未公开披露。 |
+| **当前国库地址** | ❌ 无法验证 | PRO 代币的 `treasury` 字段值未公开披露。 |
+| **白名单地址列表** | ❌ 无法验证 | 免税/免除限制的地址未公开披露。 |
+| **角色管理者地址** | ❌ 无法验证 | 国库系统中各角色的授权管理者未披露。 |
+| **质押实现逻辑** | ❌ 未验证 | 实现合约存在但源代码未在 BscScan 验证。 |
 
 ---
 
-## 🛡️ Security Analysis
+## 🛡️ 安全分析
 
-### ✅ Positive Indicators:
-1. **Core contracts verified**: PRO Token and Treasury Implementation are verified on BscScan
-2. **Upgradeable architecture**: Uses established OpenZeppelin TransparentUpgradeableProxy pattern
-3. **Multi-sig governance**: Core permissions controlled via Gnosis Safe
-4. **Role-based access control**: Treasury implements granular permissions
-5. **Queue system**: Role changes require block delay for security
+### ✅ 积极指标：
+1. **核心合约已验证**：PRO 代币和国库实现在 BscScan 上已验证
+2. **可升级架构**：使用成熟的 OpenZeppelin TransparentUpgradeableProxy 模式
+3. **多签治理**：核心权限通过 Gnosis Safe 控制
+4. **基于角色的访问控制**：国库实现细粒度权限管理
+5. **队列系统**：角色变更需要区块延迟以提高安全性
 
-### ⚠️ Risk Factors:
-1. **Staking contract UNVERIFIED**: Implementation at `0x6d69...2f54` has no verified source code
-2. **Community warnings**: Multiple Twitter/X accounts have associated this project with previous projects (AKAS, OLY, LynkCoDAO) alleged to be part of a "cycle" pattern
-3. **Centralization risks**: Owner and governance roles have significant control
-4. **Minting capability**: Treasury can mint unlimited PRO tokens
-5. **Transfer restrictions**: Owner can disable transfers from liquidity pool
-6. **Tax configurability**: Sell tax can be adjusted up to 30%
-7. **Empty pro-ecosystem directory**: Project structure appears incomplete
+### ⚠️ 风险因素：
+1. **质押合约未验证**：`0x6d69...2f54` 实现没有已验证的源代码
+2. **社区警告**：多个 Twitter/X 账户将此项目与之前的项目（AKAS、OLY、LynkCoDAO）关联，据称是"循环"模式
+3. **中心化风险**：所有者和治理角色具有重大控制权
+4. **铸造能力**：国库可以无限制铸造 PRO 代币
+5. **转账限制**：所有者可以禁用流动性池的转账
+6. **税收可配置**：卖出税可调整至最高 30%
+7. **空 pro-ecosystem 目录**：项目结构似乎不完整
 
-### 🔒 Recommendations:
-1. **Do not invest more than you can afford to lose**
-2. **Verify all contracts on BscScan before interacting**
-3. **Monitor multi-sig wallet activity**
-4. **Check for recent contract upgrades**
-5. **Review transaction history for unusual activity**
-6. **Be aware of tax implications before trading**
+### 🔒 建议：
+1. **不要投入超过你能承受损失的资金**
+2. **在 BscScan 上验证所有合约后再交互**
+3. **监控多签钱包活动**
+4. **检查最近的合约升级**
+5. **查看交易历史是否有异常活动**
+6. **交易前注意税收影响**
 
 ---
 
-## 📊 Market Data
+## 📊 市场数据
 
-| Metric | Value |
+| 指标 | 值 |
 |--------|-------|
-| **Current Price** | ~$60.81 USD |
-| **All-Time High** | ~$60.83 USD |
-| **Market Cap** | ~$0 (unverified) |
-| **24h Volume** | ~$1.6 Million |
-| **Holders** | 140,900 |
-| **Total Supply** | 1,240,979.305198 PRO |
+| **当前价格** | ~$60.81 USD |
+| **历史最高** | ~$60.83 USD |
+| **市值** | ~$0（未验证） |
+| **24h 交易量** | ~$160 万 |
+| **持有者** | 140,900 |
+| **总供应量** | 1,240,979.305198 PRO |
 
-*Data sourced from LiveCoinWatch, Birdeye, and PancakeSwap. Prices may be outdated.*
-
----
-
-## 🔍 How to Verify Contracts
-
-### Step 1: Visit BscScan
-Go to [https://bscscan.com](https://bscscan.com)
-
-### Step 2: Search Contract Address
-Copy any contract address from this document and paste it into the search bar.
-
-### Step 3: View Source Code
-- Click the **Contract** tab
-- Look for the green checkmark (✅) indicating verified code
-- Read the Solidity source code directly
-
-### Step 4: Read Contract Data
-- For standard contracts: Click **Read Contract**
-- For proxy contracts: Click **Read as Proxy**
-- View live parameters and state
-
-### Step 5: Monitor Transactions
-- Click **Transactions** to view interaction history
-- Check **Internal Txns** for contract-to-contract calls
-- Review **Token Transfers** for BEP-20 movements
+*数据来源：LiveCoinWatch、Birdeye、PancakeSwap。价格可能已过时。*
 
 ---
 
-## ⚙️ Technical Stack
+## 🔍 如何验证合约
 
-| Component | Version/Details |
+### 第 1 步：访问 BscScan
+前往 [https://bscscan.com](https://bscscan.com)
+
+### 第 2 步：搜索合约地址
+复制本文档中的任何合约地址并粘贴到搜索栏中。
+
+### 第 3 步：查看源代码
+- 点击 **Contract** 标签
+- 查找绿色勾号（✅）表示已验证的代码
+- 直接阅读 Solidity 源代码
+
+### 第 4 步：读取合约数据
+- 对于标准合约：点击 **Read Contract**
+- 对于代理合约：点击 **Read as Proxy**
+- 查看实时参数和状态
+
+### 第 5 步：监控交易
+- 点击 **Transactions** 查看交互历史
+- 检查 **Internal Txns** 了解合约间调用
+- 查看 **Token Transfers** 了解 BEP-20 转移
+
+---
+
+## ⚙️ 技术栈
+
+| 组件 | 版本/详情 |
 |-----------|----------------|
 | **Solidity** | 0.8.30 |
-| **EVM Version** | Cancun / Prague |
-| **Framework** | OpenZeppelin Contracts & Upgradeable |
-| **Proxy Pattern** | Transparent Upgradeable Proxy (ERC1967) |
-| **Blockchain** | BNB Smart Chain (BSC) |
-| **Optimizer** | Enabled (200 runs) |
-| **IR Compilation** | Enabled (viaIR) |
-| **Build Tool** | Likely Foundry (Settings files indicate Forge) |
+| **EVM 版本** | Cancun / Prague |
+| **框架** | OpenZeppelin Contracts & Upgradeable |
+| **代理模式** | Transparent Upgradeable Proxy (ERC1967) |
+| **区块链** | 币安智能链（BSC） |
+| **优化器** | 已启用（200 次运行） |
+| **IR 编译** | 已启用（viaIR） |
+| **构建工具** | 可能为 Foundry（Settings 文件表明使用 Forge） |
 
 ---
 
-## 📝 Transaction History
+## 📝 交易历史
 
-### Key Transactions:
+### 关键交易：
 
-| Description | Transaction Hash |
+| 描述 | 交易哈希 |
 |-------------|------------------|
-| RBS Owner Change | [0x73c3842...](https://bscscan.com/tx/0x73c38428fdf75ed3fe3a8bcf5c51aeb04144bd6a1e0f2af2c36191ae7f274b5c#eventlog) |
-| Proxy Admin TX 1 | [0x0e414ee...](https://bscscan.com/tx/0x0e414eeed70d947fea719af0fd6def68a2ba038103ca886b65103c8f607c886e) |
-| Proxy Admin TX 2 | [0xea04f20...](https://bscscan.com/tx/0xea04f2023b1dcc1264fd07ab983947c4784ccb3fb86b16de8c1162f6a037f2b1) |
-| Staking Proxy TX 1 | [0x795be95...](https://bscscan.com/tx/0x795be955eab2da66e1e23c03d17e0e95639f29b28bda154330394c37ea8007fa#eventlog) |
-| Staking Proxy TX 2 | [0x246bf6b...](https://bscscan.com/tx/0x246bf6bb3d18a761542563cce8dc152eaa9352a02335b26c5a6b853472fc7777#eventlog) |
+| RBS 所有者变更 | [0x73c3842...](https://bscscan.com/tx/0x73c38428fdf75ed3fe3a8bcf5c51aeb04144bd6a1e0f2af2c36191ae7f274b5c#eventlog) |
+| 代理管理员交易 1 | [0x0e414ee...](https://bscscan.com/tx/0x0e414eeed70d947fea719af0fd6def68a2ba038103ca886b65103c8f607c886e) |
+| 代理管理员交易 2 | [0xea04f20...](https://bscscan.com/tx/0xea04f2023b1dcc1264fd07ab983947c4784ccb3fb86b16de8c1162f6a037f2b1) |
+| 质押代理交易 1 | [0x795be95...](https://bscscan.com/tx/0x795be955eab2da66e1e23c03d17e0e95639f29b28bda154330394c37ea8007fa#eventlog) |
+| 质押代理交易 2 | [0x246bf6b...](https://bscscan.com/tx/0x246bf6bb3d18a761542563cce8dc152eaa9352a02335b26c5a6b853472fc7777#eventlog) |
 
 ---
 
-## 🚨 Important Notes
+## 🚨 重要说明
 
-### What Could NOT Be Verified:
+### 无法验证的内容：
 
-1. ❌ **Staking Implementation Source Code**: Not published on BscScan
-2. ❌ **PancakeSwap Pair Address**: targetPool not publicly disclosed
-3. ❌ **Bond Calculator Contract**: Address and logic unknown
-4. ❌ **RBS Contract**: Full address and functionality unknown
-5. ❌ **USD Reserve Token**: Stablecoin address unknown
-6. ❌ **Current Role Holders**: Addresses authorized for treasury roles not disclosed
-7. ❌ **Governance Parameters**: Current governance and treasury addresses not publicly visible
-8. ❌ **Project Team**: Developer/team identities anonymous
-9. ❌ **Audit Reports**: No security audits found
-10. ❌ **Official Documentation**: No whitepaper or technical documentation located
+1. ❌ **质押实现源代码**：未在 BscScan 发布
+2. ❌ **PancakeSwap 配对地址**：targetPool 未公开披露
+3. ❌ **债券计算器合约**：地址和逻辑未知
+4. ❌ **RBS 合约**：完整地址和功能未知
+5. ❌ **USD 储备代币**：稳定币地址未知
+6. ❌ **当前角色持有者**：国库授权角色的地址未披露
+7. ❌ **治理参数**：当前治理和国库地址未公开可见
+8. ❌ **项目团队**：开发者/团队身份匿名
+9. ❌ **审计报告**：未发现安全审计
+10. ❌ **官方文档**：未找到白皮书或技术文档
 
-### Community Reports:
+### 社区报告：
 
-Multiple sources on X/Twitter have linked this project to a series of previous projects:
+X/Twitter 上的多个来源将此项目与一系列先前项目关联：
 - AKAS → OLY → LynkCoDAO → CryptoDAO V3 PRO
 
-These reports allege a pattern of project cycling. **This has not been independently confirmed.** All claims are from community members and should be evaluated carefully.
+这些报告据称是一个"循环"模式。**这尚未被独立证实。** 所有声称均来自社区成员，应仔细评估。
 
 ---
 
-## 📞 Resources
+## 📞 资源链接
 
-- **BscScan**: [https://bscscan.com](https://bscscan.com)
-- **PancakeSwap**: [https://pancakeswap.finance](https://pancakeswap.finance)
-- **PRO Token on Birdeye**: [View](https://birdeye.so/bsc/token/0x8D65744527f55d0b2338350912d5C99A81ddF0e2)
-- **PRO Token on LiveCoinWatch**: [View](https://www.livecoinwatch.com/price/ProToken-___________PRO)
-- **PRO Token on PancakeSwap**: [View](https://pancakeswap.finance/info/bsc/tokens/0x8d65744527f55d0b2338350912d5c99a81ddf0e2)
-
----
-
-## 📜 License
-
-Smart contracts use MIT License (as specified in verified contracts). This documentation is provided for informational purposes only.
+- **BscScan**：[https://bscscan.com](https://bscscan.com)
+- **PancakeSwap**：[https://pancakeswap.finance](https://pancakeswap.finance)
+- **PRO 代币 on Birdeye**：[查看](https://birdeye.so/bsc/token/0x8D65744527f55d0b2338350912d5C99A81ddF0e2)
+- **PRO 代币 on LiveCoinWatch**：[查看](https://www.livecoinwatch.com/price/ProToken-___________PRO)
+- **PRO 代币 on PancakeSwap**：[查看](https://pancakeswap.finance/info/bsc/tokens/0x8d65744527f55d0b2338350912d5c99a81ddf0e2)
 
 ---
 
-## ⚖️ Disclaimer
+## 📜 许可证
 
-This document is compiled from on-chain data, verified smart contract code, and publicly available information. It does not constitute financial advice. 
-
-**Key Points:**
-- Always verify contracts on BscScan before interacting
-- Smart contracts can be upgraded (proxy architecture)
-- Owner/governance roles have significant control
-- Community reports exist alleging connections to previous projects
-- No audit reports have been found
-- All investments carry risk; never invest more than you can afford to lose
+智能合约使用 MIT 许可证（如已验证合约中指定）。本文档仅供参考。
 
 ---
 
-*Last Updated: April 8, 2026*  
-*Data Sources: BscScan, LiveCoinWatch, Birdeye, PancakeSwap, On-chain RPC Queries*  
-*Documentation Status: **COMPREHENSIVE** - All verifiable data included, limitations documented*
+## ⚖️ 免责声明
+
+本文档基于链上数据、已验证的智能合约代码和公开可用的信息汇编而成。这不构成财务建议。
+
+**关键点：**
+- 在交互之前始终在 BscScan 上验证合约
+- 智能合约可升级（代理架构）
+- 所有者/治理角色具有重大控制权
+- 存在据称与先前项目关联的社区报告
+- 未发现审计报告
+- 所有投资都有风险；永远不要投入你无法承受损失的资金
+
+---
+
+*最后更新：2026 年 4 月 8 日*  
+*数据来源：BscScan、LiveCoinWatch、Birdeye、PancakeSwap、链上 RPC 查询*  
+*文档状态：**全面** - 包含所有可验证数据，已记录限制说明*
