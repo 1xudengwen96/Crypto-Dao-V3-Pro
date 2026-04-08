@@ -53,6 +53,19 @@
 - **总交易数**: 10 笔
 - **活跃期**: 2026 年 3 月 11 日 - 24 日
 
+### RBS 合约
+- **代理地址**: `0xc2d8595fe8d904a8665059d68a6fa2467df09a13`
+- **状态**: ✅ 已验证（TransparentUpgradeableProxy）
+- **BscScan**: https://bscscan.com/address/0xc2d8595fe8d904a8665059d68a6fa2467df09a13
+- **实现地址**: `0x309c177f3ae5a4132427895ab5cd005f181adefa`
+- **实现合约名称**: RBSControl
+- **编译器**: Solidity v0.8.30
+- **优化**: 已启用（200 次运行）
+- **EVM 版本**: Prague
+- **持有资产**: ~5,208,232 BSC-USD（约 $520 万）
+- **总交易数**: 655+ 笔
+- **设置交易**: https://bscscan.com/tx/0x70e1ec94353845057b482800a310a746e65b3b692ad53918258a3ebbc50d2775
+
 ---
 
 ## 已知角色持有者
@@ -63,6 +76,10 @@
 - **质押代理所有者**: `0xD78D4a09E00a54ac9787ECbBeCA02791336C75b3`
   - 交易 1: https://bscscan.com/tx/0x795be955eab2da66e1e23c03d17e0e95639f29b28bda154330394c37ea8007fa#eventlog
   - 交易 2: https://bscscan.com/tx/0x246bf6bb3d18a761542563cce8dc152eaa9352a02335b26c5a6b853472fc7777#eventlog
+
+### RBS 合约
+- **RBS 设置交易**: https://bscscan.com/tx/0x70e1ec94353845057b482800a310a746e65b3b692ad53918258a3ebbc50d2775
+- **RBS 代理管理员**: `0x98b3534f128a131FB5D1C48749f8c93fd65553c4`（与国库代理相同）
 
 ### 代理管理员交易
 - **国库代理管理员交易 1**: https://bscscan.com/tx/0x0e414eeed70d947fea719af0fd6def68a2ba038103ca886b65103c8f607c886e
@@ -78,7 +95,6 @@
 |-----------|--------|-------|
 | PancakeSwap 流动性池（targetPool） | ❌ 未知 | PRO 代币的目标流动性池 |
 | 债券计算器（Bond Calculator） | ❌ 未知 | LP 代币估值合约 |
-| RBS 合约（完整地址） | ❌ 未知 | 仅知道所有者地址 |
 | USD 稳定币储备 | ❌ 未知 | 国库接受的稳定币 |
 | 当前治理地址 | ❌ 未知 | PRO 代币的 governance 字段 |
 | 当前国库地址 | ❌ 未知 | PRO 代币的 treasury 字段 |

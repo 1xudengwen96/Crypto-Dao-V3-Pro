@@ -70,7 +70,31 @@
 **阅读时间**: 15 分钟
 **优先级**: 首次交互前必读
 
-### 5. [PROJECT_TREE.md](../PROJECT_TREE.md)
+### 5. [docs/RBS_ANALYSIS.md](RBS_ANALYSIS.md)
+**RBS 合约完整分析**
+- RBS 合约架构和功能
+- 核心函数详解
+- 与国库系统的关系
+- 安全分析
+- 链上数据
+- 源代码位置
+
+**阅读时间**: 25 分钟
+**优先级**: 高（了解铸造机制）
+
+### 6. [docs/FUND_FLOW_ANALYSIS.md](FUND_FLOW_ANALYSIS.md) 💰
+**完整资金流向分析**
+- 资金流入来源
+- 资金流出路径
+- 内部资金分配
+- 完整资金流向图
+- 质押系统运作
+- 风险评估
+
+**阅读时间**: 30 分钟
+**优先级**: 极高（了解资金安全）
+
+### 7. [PROJECT_TREE.md](../PROJECT_TREE.md)
 **原始项目结构**
 - 初始树状图
 - 合约关系
@@ -121,13 +145,16 @@ Crypto-Dao-V3-Pro/
 ├── 📁 docs/                         详细指南
 │   ├── ADDRESSES.md                 地址注册表
 │   ├── SECURITY_ANALYSIS.md         风险评估
-│   └── VERIFICATION_GUIDE.md        验证教程
+│   ├── VERIFICATION_GUIDE.md        验证教程
+│   ├── RBS_ANALYSIS.md              RBS 合约分析
+│   └── FUND_FLOW_ANALYSIS.md        资金流向分析
 │
 ├── 📁 contracts/                    组织化的智能合约
 │   ├── PRO_Token/                   ✅ 已验证
 │   ├── Treasury_Proxy/              代理基础设施
 │   ├── Treasury_Implementation/     ✅ 已验证
 │   ├── Staking_Proxy/               代理基础设施
+│   ├── RBS_Implementation/          ✅ 已验证（RBSControl）
 │   └── Multisig_Wallet/             （空 - 仅供参考）
 │
 ├── 📁 [旧目录]                      原始结构（参考）
@@ -151,13 +178,15 @@ Crypto-Dao-V3-Pro/
 1. ✅ 阅读 **README.md**（15 分钟）
 2. ✅ 阅读 **SECURITY_ANALYSIS.md** - 风险部分（10 分钟）
 3. ✅ 查看 **ADDRESSES.md**（5 分钟）
-4. ⏭️ 除非需要，否则跳过技术细节
+4. ✅ 查看 **FUND_FLOW_ANALYSIS.md** - 资金流向（15 分钟）
+5. ⏭️ 除非需要，否则跳过技术细节
 
 ### 潜在用户/投资者
 1. ✅ 完成上面的"新用户"路径
 2. ✅ 阅读完整的 **SECURITY_ANALYSIS.md**（20 分钟）
-3. ✅ 按照 **VERIFICATION_GUIDE.md** 验证合约（15 分钟）
-4. ⚠️ 根据已识别的风险做出明智决定
+3. ✅ 阅读完整的 **FUND_FLOW_ANALYSIS.md**（30 分钟）
+4. ✅ 按照 **VERIFICATION_GUIDE.md** 验证合约（15 分钟）
+5. ⚠️ 根据已识别的风险做出明智决定
 
 ### 开发者
 1. ✅ 阅读 **README.md**（15 分钟）
